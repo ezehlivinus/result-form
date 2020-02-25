@@ -1,0 +1,81 @@
+{% extends 'result/base.html' %}
+
+{% block title %}Home{% endblock %}
+
+
+{% block content %}
+    
+  <div class="container">
+
+    <div class="card text-center">
+      <div class="card-header">
+        Choose an action to perform
+      </div>
+      <div class="card-body">
+        
+            <div class="row">
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Administration</h5>
+                <p class="card-text">Add new or modify existing results together with its 
+                corresponding resources or particulars</p>
+                <a href="admin/" target="_blank" class="btn btn-primary">Go here</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Results</h5>
+                <p class="card-text">View and Print Students' results</p>
+                {% comment %} <a href="#" class="btn btn-primary">Go here</a> {% endcomment %}
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                  Go here
+                </button>
+                  <!-- Modal -->
+                  <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">Enter student information</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="{% url 'index' %}" method="post">
+                            {% csrf_token %}
+                            {{ form }}
+                            <br>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                          </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="card-footer text-muted">
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+
+{% block extra-script %}
+  <script>
+
+  </script>
+{% endblock %}
+

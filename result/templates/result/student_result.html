@@ -1,0 +1,52 @@
+{% extends 'result/base.html' %}
+
+{% block title %}{{ student.name.title }} | Result{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+    <div class="card text-center">
+      <div class="card-header">
+        Student Profile - Result Checker
+      </div>
+      <div class="card-body">
+        
+            <div class="row">
+            {% comment %} <div class="col-sm-2"></div> {% endcomment %}
+            
+          <div class="col-sm-5">
+            <div style="text-align: left" class="card">
+              <div class="card-body">
+                <h5 class="card-title"></h5>
+                <p class="card-text">Admission Number: {{session}} {{grade}}
+                <br/>
+                Gender: 
+                <br/>
+                {% comment %} Grade: {{student.grade.name.title }} {{student.grade.colour.title }} {% endcomment %}
+                </p>
+                <a href="admin/" target="_blank" class="btn btn-primary">Go here</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-7">
+            <div style="text-align: left" class="card">
+              <div class="card-body">
+                <h5 class="card-title">Check Result</h5>
+                <p class="card-text">
+               
+              </div>
+            </div>
+          </div>
+
+          {% comment %} <div class="col-sm-2"></div> {% endcomment %}
+        </div>
+      </div>
+    <div class="card-footer text-muted">
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}
