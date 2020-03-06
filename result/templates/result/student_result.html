@@ -1,7 +1,19 @@
+
 {% extends 'result/base.html' %}
 
-{% block title %}{{ student.name.title }} | Result{% endblock %}
+{% load static %}
+{% load result_extras %}
 
+{% block title %}{{ student.name.title }} | Result{% endblock %}
+{% block extra-head %}
+  <style>
+    @media print {
+      #print-button {
+        display: none;
+      }
+    }
+  </style>
+{% endblock %}
 
 {% block content %}
 
@@ -9,36 +21,113 @@
 
     <div class="card text-center">
       <div class="card-header">
-        Student Profile - Result Checker
+        <img src="{% static "result/image/logo.gif" %}" width="50" heigth="50" alt="some image" />
+        <span style="font-weight: bold"> Student Profile - Result Checker</span>
+        <br/><br/>
+        <p style="font-weight: bold; font-size: 20px;">Pupils Report</p>
       </div>
       <div class="card-body">
-        
+        <div class="row">
+          <div class="col-sm-12">
+              <div style="text-align: left" class="card">
+              
+                <div class="card-body">
+                <ul class="list-group list-group-horizontal-sm">
+                  <li class="list-group-item flex-fill"><h5 class="card-title"><sapn>TERM: {{ term.name.title }}</span> </h5></li>
+                  <li class="list-group-item flex-fill"><h5 class="card-title">SESSION: {{ session.name }}</h5></li>
+                  {% comment %} <li class="list-group-item flex-fill">Morbi leo risus</li> {% endcomment %}
+                </ul>
+                <br/>
+                  <h5 class="card-title">NAME OF PUPILS: {{ student.name }}</h5>
+                  <h5 class="card-title">ADMISSION NUMBER: {{ student.admission_number }}</h5>
+                  <h5 class="card-title">GRADE: {{ grade.number.name.title }} {{ grade.colour.name.title }}</h5>
+                  
+                
+                </div>
+              </div>
+            </div>
+        </div>
+        <br/>
             <div class="row">
-            {% comment %} <div class="col-sm-2"></div> {% endcomment %}
+
+            <div class="col-sm-9">
+              <div style="text-align: left" class="card">
+                <div class="card-body">
+                  {% comment %} <h5 class="card-title">Check Result</h5> {% endcomment %}
+                  <p class="card-text">
+                  
+                    <div class="table-responsive-sm">
+                      {% comment %} <caption>Result</caption> {% endcomment %}
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">Subject</th>
+                            <th scope="col">CA</th>
+                            <th scope="col">Project</th>
+                            <th scope="col">Exam</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Term Comm.</th>
+                            <th scope="col">Teacher</th>
+                          </tr>
+                        </thead>
+                         <tbody>
+                          {% for result in results %}
+                          <tr>
+                            <th scope="row">{{ forloop.counter }} {{ result.subject.name.title }}</th>
+                            <td>{{ result.ca }}</td>
+                            <td>{{ result.project }}</td>
+                            <td>{{ result.exam }}</td>
+                                
+                            <td> {{ result.total }}</td>
+                            <td>{{ result.comment }}</td>
+                            <td>{{ result.grade.teacher.name }}</td>
+                          </tr>
+                          {% endfor %}
+
+                          <tr>
+                            
+                            <td colspan="7"></td>
+                            {% comment %} <td>@twitter</td> {% endcomment %}
+                          </tr>
+                          <tr>
+                            <th colspan="0">Total Score</th>
+                            <th colspan="0">Class Average</th>
+                            <th colspan="0">Pupils Average</th>
+                            <th colspan="0">Position</th>
+                            <th colspan="3">Promoted / Not Promoted</th>
+                          </tr>
+                          <tr>
+                            <td colspan="0">{{total_score}}</td>
+                            <td colspan="0">[class_average]</td>
+                            <td colspan="0">{{pupil_average}}</td>
+                            <td colspan="0">[position]</td>
+                            <td colspan="3">[Promoted / Not Promoted]</td>
+                          </tr>
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </p>
+                
+                </div>
+              </div>
+            </div>
             
-          <div class="col-sm-5">
+          <div class="col-sm-3">
             <div style="text-align: left" class="card">
               <div class="card-body">
-                <h5 class="card-title"></h5>
-                <p class="card-text">Admission Number: {{session}} {{grade}}
-                <br/>
-                Gender: 
-                <br/>
-                {% comment %} Grade: {{student.grade.name.title }} {{student.grade.colour.title }} {% endcomment %}
-                </p>
-                <a href="admin/" target="_blank" class="btn btn-primary">Go here</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-7">
-            <div style="text-align: left" class="card">
-              <div class="card-body">
-                <h5 class="card-title">Check Result</h5>
+                <h5 class="card-title">Term Comment Code </h5>
                 <p class="card-text">
-               
+                  <ol>
+                    <li>Consistently good worker</li>
+                    <li>Participates actively in class</li>
+                  </ol>
+                </p>
+                <button type="button" id="print-button"  onclick="window.print()" class="btn btn-primary">Print result</button>
               </div>
             </div>
           </div>
+          
 
           {% comment %} <div class="col-sm-2"></div> {% endcomment %}
         </div>
@@ -49,4 +138,13 @@
   </div>
 </div>
 
+{% endblock %}
+{% block extra-script %}
+  <script>
+    
+    {% comment %} const removeButton = () => {
+      print = document.querySelector('button[id=print-result]')
+     
+    } {% endcomment %}
+  </script>
 {% endblock %}

@@ -26,10 +26,57 @@
                 <br/>
                 {% comment %} Grade: {{student.grade.name.title }} {{student.grade.colour.title }} {% endcomment %}
                 </p>
-                <a href="admin/" target="_blank" class="btn btn-primary">Go here</a>
+                
+                <hr>
+
+                <h5 class="card-title">Add new result</h5>
+                {% comment %} form {% endcomment %}
+                  <form action="edit/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" class="form-control" value="{{ student.admission_number }}" name="admin_number">
+                    <input type="hidden" class="form-control" value="{{ student.id }}" name="pk">
+                    
+                    <label>Session
+                        <select name="session" class="custom-select custom-select-sm">
+                        {% for session in sessions %}
+                            {% comment %} <option selected>{{ session }}</option> {% endcomment %}
+                            <option value="{{ session.id }}">{{ session.name }}</option>
+                        {% endfor %}
+                        </select>
+                        <span class="small">This result is for which session</span>
+                      </label>
+                    <br/>
+                    <label>Grade
+                        <select name="grade" class="custom-select custom-select-sm">
+                        {% for grade in grades %}
+                            {% comment %} <option selected>{{ session }}</option> {% endcomment %}
+                            <option value="{{ grade.id }}">{{ grade.number }} {{ grade.colour }}</option>
+                        {% endfor %}
+                        </select>
+                        <span class="small">Which class/grade is this result for?</span>
+                      </label>
+                    <br/>
+
+                    <label>Term
+                    <select name="term" class="custom-select custom-select-sm">
+                        {% for term in terms %}
+                            {% comment %} <option selected>{{ session }}</option> {% endcomment %}
+                            <option value="{{ term.id }}">{{ term.name.title }}</option>
+                        {% endfor %}
+                        </select>
+                      </label>
+                    <br/>
+                    
+                    
+                    </p>
+                    <button type="submit" class="btn btn-primary">Add or Edit Result</button>
+                    </form>
+                {% comment %} end form {% endcomment %}
+                {% comment %} <a href="admin/" target="_blank" class="btn btn-primary">Go here</a> {% endcomment %}
               </div>
             </div>
           </div>
+
           <div class="col-sm-7">
             <div style="text-align: left" class="card">
               <div class="card-body">
@@ -37,6 +84,9 @@
                 <p class="card-text">
                     <form action="" method="post">
                     {% csrf_token %}
+                    <input type="hidden" class="form-control" value="{{ student.admission_number }}" name="admin_number">
+                    <input type="hidden" class="form-control" value="{{ student.id }}" name="pk">
+                    
                     Session
                         <select name="session" class="custom-select custom-select-sm">
                         {% for session in sessions %}
@@ -49,10 +99,18 @@
                         <select name="grade" class="custom-select custom-select-sm">
                         {% for grade in grades %}
                             {% comment %} <option selected>{{ session }}</option> {% endcomment %}
-                            <option value="{{ grade.id }}">{{ grade.name.title }} {{ grade.colour.title }}</option>
+                            <option value="{{ grade.id }}">{{ grade.number }} {{ grade.colour }}</option>
                         {% endfor %}
                         </select>
                     <br/>
+                     <label>Term
+                    <select name="term" class="custom-select custom-select-sm">
+                        {% for term in terms %}
+                            {% comment %} <option selected>{{ session }}</option> {% endcomment %}
+                            <option value="{{ term.id }}">{{ term.name.title }}</option>
+                        {% endfor %}
+                        </select>
+                      </label>
                     <br/>
                     
                     </p>
@@ -62,9 +120,11 @@
             </div>
           </div>
 
+          
           {% comment %} <div class="col-sm-2"></div> {% endcomment %}
         </div>
       </div>
+      
     <div class="card-footer text-muted">
       
     </div>
