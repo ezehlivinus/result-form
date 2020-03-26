@@ -2,3 +2,4 @@ db.sqlite3
 result/migrations/__pycache__
 result/__pycache__
 school/__pycache__
+*/__pycache__
