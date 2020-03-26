@@ -1,0 +1,166 @@
+
+{% extends 'result/base.html' %}
+
+{% load static %}
+{% load result_extras %}
+
+{% block title %} Pupils' Positions{% endblock %}
+{% block extra-head %}
+
+{% endblock %}
+
+
+{% block content %}
+
+    <div class="container">
+
+    <div class="card text-center">
+      <div class="card-header">
+        <img src="{% static "result/image/logo.gif" %}" width="50" heigth="50" alt="some image" />
+        <span style="font-weight: bold"></span>
+        <br/><br/>
+        <p style="font-weight: bold; font-size: 20px;">{{mess}}Compute Pupils Positions</p>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-12">
+              <div style="text-align: left" class="card">
+              
+                <div class="card-body">
+                  <p class="card-text">
+                    {{ message }}
+                  </p>  
+                </div>
+              </div>
+            </div>
+        </div>
+        <br/>
+            <div class="row">
+
+            <div class="col-sm-12">
+              <div style="text-align: left" class="card">
+                <div class="card-body">
+                  {% comment %} <h5 class="card-title">Check Result</h5> {% endcomment %}
+                  <p class="card-text">
+                    <form action="" method="post" class"">
+                        {% csrf_token %}
+                        
+                        <input type="hidden" value="{{ session.id }}" name="session">
+                        <input type="hidden" value="{{ term.id }}" name="term">
+                        <input type="hidden" value="{{ grade.id }}" name="grade">
+                        <input type="hidden" value="{{ student.admission_number }}" name="admin_number" >
+                        
+                        <label>Grade</label>
+                        <select name="grade" class="custome-select custom-select-sm">
+                            {% for grade in grades %}
+                            <option value="{{grade.id}}">{{ grade }}</option>
+                            {% endfor %}
+                        </select> 
+                        <br/>
+
+                        <label>Session</label>
+                        <select name="session" class="custome-select custom-select-sm">
+                            {% for session in sessions %}
+                            <option value="{{session.id}}">{{ session }}</option>
+                            {% endfor %}
+                        </select>
+                        <br/>
+
+                        <label>Term</label>
+                        <select name="term" class="custome-select custom-select-sm">
+                            {% for term in terms %}
+                            <option value="{{term.id}}">{{ term }}</option>
+                            {% endfor %}
+                        </select> 
+                        <br/>
+
+                        <hr>
+                        <label>
+                        Number in class <br>
+                        <span class="small">Enter this number to calculate (recalculate) class average</span>
+                        </label>
+                        <input type="number" class="form-control col-md-4 center" min="1" value="" placeholder="Number of student in this stduent class" name="number_in_class">
+                        <br>
+                        <hr>
+                        <div class="text-left">                
+                        <button type="submit" class="btn btn-primary btn-sm">Submit</button>
+                        </div>
+                    </form>
+                  </p>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+
+{% comment %} Presentation of positions {% endcomment %}
+          <br>
+          <div class="row">
+          <div class="col-sm-12">
+              <div style="text-align: left" class="card">
+              
+                <div class="card-body">
+                  
+                  {% if class_average_exist %}
+                  <div class="alert alert-primary" role="alert">
+                    Number in class: {{ class_average.number_in_class }}
+                    <br/>
+                    Number of scores (same as number of positions below): {{class_average.number_of_score}}
+                    <br/>
+                    Average: (sum of total / number of scores): {{ class_average.average}} 
+                  </div>
+                  {% endif %}
+
+                  <p class="card-text">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Grade</th>
+                          <th scope="col">Session</th>
+                          <th scope="col">Term</th>
+                          <th scope="col">Total score</th>
+                          <th scope="col">Position</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                      {% for position in positions %}
+                        <tr>
+                          <th scope="row">{{ forloop.counter }}</th>
+                          <td>{{ position.student.name }}</td>
+                          <td>{{ position.grade }}</td>
+                          <td>{{ position.session }}</td>
+                          <td>{{ position.term }}</td>
+                          <td>{{ position.total_score }}</td>
+                          <th scope="row">{{ position.position }}</th>
+                        </tr>
+                      {% empty %}
+                        <div class="alert alert-danger" role="alert">
+                          No positions found. Please select session, grade and term above and submit
+                        </div>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+
+                  </p>  
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <br/>
+        <br/>
+        {% comment %} Ends presentation of positions {% endcomment %}
+
+      </div>
+
+    <div class="card-footer text-muted">
+      
+    </div>
+  </div>
+  <br/>
+</div>
+
+{% endblock %}

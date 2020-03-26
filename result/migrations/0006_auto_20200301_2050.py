@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='result',
             name='total',
-            field=models.PositiveIntegerField(default=0, validators=[result.models.Result.validate_max]),
+            field=models.PositiveIntegerField(default=0),
         ),
     ]

@@ -19,7 +19,7 @@
         <img src="{% static "result/image/logo.gif" %}" width="50" heigth="50" alt="some image" />
         <span style="font-weight: bold">Edit result</span>
         <br/><br/>
-        <p style="font-weight: bold; font-size: 20px;">Pupils Report</p>
+        <p style="font-weight: bold; font-size: 20px;">{{mess}}Pupils Report</p>
       </div>
       <div class="card-body">
         <div class="row">
@@ -27,16 +27,21 @@
               <div style="text-align: left" class="card">
               
                 <div class="card-body">
-                <ul class="list-group list-group-horizontal-sm">
-                  <li class="list-group-item flex-fill"><h5 class="card-title"><sapn>TERM: {{ term.name }}</span> </h5></li>
-                  <li class="list-group-item flex-fill"><h5 class="card-title">SESSION: {{ session.name }}</h5></li>
-                  {% comment %} <li class="list-group-item flex-fill">Morbi leo risus</li> {% endcomment %}
-                </ul>
-                <br/>
-                  <h5 class="card-title">NAME OF PUPILS: {{ student.name.upper }}</h5>
-                  <h5 class="card-title">ADMISSION NUMBER: {{ student.admission_number }}</h5>
-                  <h5 class="card-title">GRADE: {{ grade.number.name.title }} {{ grade.colour.name.title }}</h5>
-                
+
+                <div class="row">
+                      <div class="col-sm-6 col-md-6">
+                      
+                        <h5 class="card-title">NAME OF PUPILS: {{ student.name }}</h5>
+                        <h5 class="card-title">ADMISSION NUMBER: {{ student.admission_number }}</h5>
+                        <h5 class="card-title">GRADE: {{ grade.number.name.title }} {{ grade.colour.name.title }}</h5>
+                      </div>
+                      <div class="col-sm-6 col-md-6">
+                      <h5 class="card-title">SESSION: {{ session.name }}</h5>
+                      <h5 class="card-title">TERM: {{ term.name.title }}</h5>
+                        
+                      </div>
+                    </div>
+
                 </div>
               </div>
             </div>
@@ -47,6 +52,11 @@
             <div class="col-sm-12">
               <div style="text-align: left" class="card">
                 <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                  Whenever you enter new result(s) or make changes to existing ones,
+                  you must <a href="{% url 'positions' %}">recompute the pupils' positions</a> for that grade, in the said session and term.
+                  <a href="{% url 'positions' %}">When you are done click here to compute positions</a>
+                </div>
                   {% comment %} <h5 class="card-title">Check Result</h5> {% endcomment %}
                   <p class="card-text">
                     <div class="table-responsive-sm">
@@ -62,12 +72,11 @@
                             <th scope="col">Exam</th>
                             {% comment %} <th scope="col">Total</th> {% endcomment %}
                             <th scope="col">Term Comm.</th>
-                            <th scope="col">Teacher</th>
+                            <th scope="col">Teacher{{true}}</th>
                           </tr>
                         </thead>
                          <tbody>
                         
-                         {% comment %} {% for result in results %} {% endcomment %}
                           {% for subject in subjects %}
                           <form id="{{ subject.id }}" action="{% url 'submit_result' student.id subject.id %}" method="post">{% csrf_token %}</form>
                             <input type="hidden" value="{{ student.admission_number }}" name="admin_number" form="{{ subject.id }}">
@@ -76,8 +85,7 @@
                             <input type="hidden" value="{{ grade.id }}" name="grade" form="{{ subject.id }}">
                             
                             
-                              {% comment %} {% if result.subject.id == subject.id %} {% endcomment %}
-                            <tr>
+                              <tr>
                               <td>
                               <div class"form-check">
                                   <input class="form-check-input position-static" type="checkbox" {% if subject.id in submitted_subjects %} checked {% endif %} disabled>
@@ -88,7 +96,6 @@
                               <td><input required name="project" {% if subject.id in submitted_subjects %} value="{{result.project}}" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
                               <td><input required name="exam" {% if subject.id in submitted_subjects %} value="{{result.exam}}" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
                                   
-                              {% comment %} <td> {{ subject.total }}</td> {% endcomment %}
                               <td>
                                 <select name="comment" form="{{ subject.id }}" class="custome-select custom-select-sm">
                                   {% for code, comment in comments.items %}
@@ -102,12 +109,7 @@
                               {% if subject.id in submitted_subjects %} edit {% else %} submit {% endif %}
                               </button> </td>
                             </tr>
-                            {% comment %} {% else %} {% endcomment %}
-                            
 
-                            {% comment %} {% endif %} {% endcomment %}
-
-                            {% comment %} {% endfor %} {% endcomment %}
                             {% comment %} endfor results {% endcomment %}
                           {% endfor %}
                           {% comment %} endfor subjects {% endcomment %}
@@ -133,6 +135,7 @@
           {% comment %} <div class="col-sm-2"></div> {% endcomment %}
         </div>
       </div>
+
     <div class="card-footer text-muted">
       
     </div>

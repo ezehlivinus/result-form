@@ -10,6 +10,7 @@ from django.views.generic import View
 
 from result.helpers import *
 
+from .all_views.positions import position
 
 # Create your views here.
 def index(request):
@@ -41,32 +42,28 @@ def detail(request, pk):
 
         template_name = 'result/student_detail.html'
         return render(request, template_name, context)
+
     if request.method == 'POST':
         # Get this student's result
-        [results, student, session, term, grade] = student_result(request, pk)
-
-        total_score = 0
-        for result in results:
-            total_score += result.total
-
+        [results, student, session, term, grade, total_score, class_average, comments] = student_result(request, pk)
 
         context = {
             'student': student,
-            # 'subject': results.subject,
             'session': session,
             'grade': grade,
-            # 'teacher': results.teacher,
             'term': term,
             'results': results,
             'total_score': total_score,
-            'pupil_average': total_score / results.count()
-
+            'pupil_average': round(total_score.average, 3),
+            'class_average': class_average,
+            'comments': comments,
         }
 
         template_name = 'result/student_result.html'
         return render(request, template_name, context)
 
 def student_result(request, pk):
+    '''Return student results'''
     session_id  = request.POST['session']
     grade_id = int(request.POST['grade'])
     admin_number = int(request.POST['admin_number'])
@@ -77,13 +74,37 @@ def student_result(request, pk):
     student = get_object_or_404(Student, pk=pk, admission_number=admin_number)
     # results = get_object_or_404(Result, student=student, session=session_id, grade=grade_id)
     results = Result.objects.all().filter(student=student, session=session_id, grade=grade_id, term=int(request.POST['term']) )
-    
-    return [results, student, session, term, grade]
+    # if results does not exist, 
+    if not results.exists():
+        raise Exception({'error': f'{results} No result for this pupil in this grade, session or term'})
+
+    try:
+        total_score = TotalScore.objects.get(
+            student_id=student.id,
+            term_id=term.id, 
+            session_id=session.id, 
+            grade_id=grade.id
+        )
+
+        class_average = ClassAverage.objects.get(
+            term_id=term.id, 
+            session_id=session.id, 
+            grade_id=grade.id
+        )
+
+        comments = term_comments()
+    except:
+        raise
+
+    return [results, student, session, term, grade, total_score, class_average, comments]
 
 
 def edit(request, pk):
+    '''Allow user to edit student result under POST request only for now'''
+
     if request.method == 'GET':
-        return render(request, 'result/edit_result.html', context={'grade': 'GET MEthods'})
+        return redirect('detail', pk = pk)
+        # return render(request, 'result/edit_result.html', context={'grade': 'GET MEthods'})
 
     admin_number = int(request.POST['admin_number'])
     student = get_object_or_404(Student, pk=pk, admission_number=admin_number)
@@ -95,6 +116,7 @@ def edit(request, pk):
     if is_junior(grade.number.name):
         # Get only the subjects offered by junior pupils
         subjects = Subject.objects.filter(is_offered_by_junior=True)
+        # to get the result that has been submitted already
         results = Result.objects.filter(
         student=student,
         grade=grade,
@@ -104,6 +126,7 @@ def edit(request, pk):
 
 
     else:
+        # === to above
         subjects = Subject.objects.all()
         results = Result.objects.filter(
         student=student,
@@ -113,24 +136,67 @@ def edit(request, pk):
         subject=subjects
         )
         
+
+    # use in determining which subject that has been submitted to the result table
     submitted_subjects = []
-    
+    sum_of_totals = 0
     for result in results:
         submitted_subjects.append(result.subject.id )
+        sum_of_totals += result.total        
 
-    terms_comments = term_comments()
+    # get student total score
+    total_score = TotalScore.objects.filter(
+        student=student,
+        grade=grade,
+        term=term,
+        session=session,
+    )
+
+    if total_score.exists():
+        # we want to update it
+        total_score = total_score[0]
+            
+        total_score.total_score = sum_of_totals
+        total_score.average = sum_of_totals / subjects.count()
+        total_score.term = term
+        total_score.session = session
+        total_score.grade = grade
+        total_score.student = student
+
+        total_score.save()
+
+    else:
+        # we want to create a new record in total_score table/models
+        try:
+            total_score = TotalScore(
+                total_score = sum_of_totals,
+                average = sum_of_totals / subjects.count(),
+                term = term,
+                session = session,
+                grade = grade,
+                student = student
+            )
+            
+            total_score.save()
+            
+        except:
+            raise
+
+
+    comments = term_comments()
 
     context = {
         'term': term,
         'grade': grade,
         'subjects': subjects,
         'session': session,
-        'comments': terms_comments,
+        'comments': comments,
         'student': student,
         'results': results,
         'submitted_subjects': submitted_subjects,
         
     }
+
     return render(request, 'result/edit_result.html', context)
 
 
@@ -146,7 +212,7 @@ def submit_result(request, pk, subject_id):
     comment = int(request.POST['comment'])
     
    
-    # check if the session, term, grade, submit has exited for this student
+    # check if the session, term, grade, submit has existed for this student
     result = Result.objects.filter(
         student=student,
         grade=grade,
@@ -155,24 +221,18 @@ def submit_result(request, pk, subject_id):
         subject=subject
         )
     
-    already_exist = True if result.count() else False
+    
 
     ca = int(request.POST['ca'])
     project = int(request.POST['project'])
     exam = int(request.POST['exam'])
 
     teacher = get_object_or_404(Teacher, pk=int(request.POST['teacher']))
-
-    if already_exist:
-        # if it doest exist
+    
+    if result.exists():
         # try updating the result instead of throwing an error with message=Result already exist
-        result = Result.objects.get(
-        student_id=student.id,
-        grade_id=grade.id,
-        term_id=term.id,
-        session_id=session.id,
-        subject_id=subject.id
-        )
+        # access the object in the queryset
+        result = result[0]
 
         result.student=student
         result.grade=grade
@@ -185,11 +245,9 @@ def submit_result(request, pk, subject_id):
         result.exam=exam
         result.teacher=teacher
 
-        result.save()
-
-        # return render(request, 'result/edit_result.html', context={'result': result } )
+        result.save() # total is calculated on the model
     else:
-    # create new result
+    # if not, create new result
         result = Result(
             student=student,
             grade=grade,
@@ -206,15 +264,19 @@ def submit_result(request, pk, subject_id):
         result.save()
 
     return edit(request, pk)
-    return render(request, 'result/edit_result.html', context={'result': result } )
+    
+
+def compute_class_average(request, pk):
+    # This has being rewritten at all_views.positions.position.py
+    pass
 
 
-
+# Below was intend and used for simulating generating pdf result
+# for now it we are using JS method: windows.print()
 import datetime
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 # from django.template import Context
-
 
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
