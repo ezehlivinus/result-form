@@ -8,7 +8,7 @@
 {% block extra-head %}
   <style>
     @media print {
-      #print-button {
+      #print-button, .edit-form {
         display: none;
       }
     }
@@ -17,14 +17,14 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container-fluid">
     <br/>
     <br/>
 
     <div class="card text-center">
       <div class="card-header">
         <img src="{% static "result/image/logo.gif" %}" width="50" heigth="50" alt="some image" />
-        <span style="font-weight: bold"> Student Profile - Result Checker</span>
+        <span style="font-weight: bold; font-size: 20px"> Graceville</span> <br/><br/> <span>Elementary School, Onuiyi - Nsukka</span>
         <br/><br/>
         <p style="font-weight: bold; font-size: 20px;">Pupils Report</p>
       </div>
@@ -42,8 +42,19 @@
                         <h5 class="card-title">GRADE: {{ grade.number.name.title }} {{ grade.colour.name.title }}</h5>
                       </div>
                       <div class="col-sm-6 col-md-6">
-                        <h5 class="card-title">TERM: {{ term.name.title }}</h5>
                         <h5 class="card-title">SESSION: {{ session.name }}</h5>
+                        <h5 class="card-title">TERM: {{ term.name.upper }}</h5>
+                        {% comment %} Print result {% endcomment %}
+                        <form action="{% url 'edit' student.id %}" method="post" class="edit-form">
+                          {% csrf_token %}
+                          <input type="hidden" value="{{ student.admission_number }}" name="admin_number" >
+                            <input type="hidden" value="{{ session.id }}" name="session" >
+                            <input type="hidden" value="{{ term.id }}" name="term" >
+                            <input type="hidden" value="{{ grade.id }}" name="grade">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                              Edit this result
+                              </button>
+                        </form>
                       </div>
                     </div>
                 </div>{% comment %} End card-body {% endcomment %}

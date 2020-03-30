@@ -1,5 +1,5 @@
 def term_comments():
-    '''Returns term comment'''
+    '''Returns term comments'''
     term_comments = {
         1: 'Consistently good worker',
         2: 'Participates actively in class',
@@ -8,7 +8,21 @@ def term_comments():
         5: 'Reads fluently',
         6: 'Memorizes well',
         7: 'Enjoys this subject',
-        8: 'Does good work'
+        8: 'Does good work',
+        9: 'Does good work',
+        10: 'A slow worker, but tries',
+        11: 'Is improving',
+        12: 'Finds this subject diff.',
+        13: 'Could do better if he/she tries',
+        14: 'Does not complete work',
+        15: 'Needs constant pressure',
+        16: 'Slow reader, daily practice neccessary',
+        17: 'Memory work poor',
+        18: 'Careless and untidy',
+        19: 'An untidy worker',
+        20: 'Shows little interest',
+        21: 'Needs special attention',
+        22: 'Homework unsatisfy needs supervisor'
 
 
     }

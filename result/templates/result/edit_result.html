@@ -38,7 +38,18 @@
                       <div class="col-sm-6 col-md-6">
                       <h5 class="card-title">SESSION: {{ session.name }}</h5>
                       <h5 class="card-title">TERM: {{ term.name.title }}</h5>
-                        
+                      {% comment %} Print result {% endcomment %}
+                        <form action="{% url 'detail' student.id %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" value="{{ student.admission_number }}" name="admin_number" >
+                            <input type="hidden" value="{{ session.id }}" name="session" >
+                            <input type="hidden" value="{{ term.id }}" name="term" >
+                            <input type="hidden" value="{{ grade.id }}" name="grade">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                              {% if submitted_subjects_count == subjects_count %} Print this result {% else %} Enter result below {% endif %}
+                              </button>
+                        </form>
+
                       </div>
                     </div>
 
@@ -92,9 +103,9 @@
                               </div>
                               </td>
                               <th scope="row">{{ subject.name }}</th>
-                              <td><input required name="ca" {% if subject.id in submitted_subjects %} value="{{result.ca}}" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
-                              <td><input required name="project" {% if subject.id in submitted_subjects %} value="{{result.project}}" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
-                              <td><input required name="exam" {% if subject.id in submitted_subjects %} value="{{result.exam}}" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
+                              <td><input required name="ca" {% if subject.id in submitted_subjects %} value="" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
+                              <td><input required name="project" {% if subject.id in submitted_subjects %} value="" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
+                              <td><input required name="exam" {% if subject.id in submitted_subjects %} value="" {% endif %} type="number" min="0" max="100" form="{{ subject.id }}" /></td>
                                   
                               <td>
                                 <select name="comment" form="{{ subject.id }}" class="custome-select custom-select-sm">

@@ -19,6 +19,11 @@ from result.views import index
 from django.views.generic import RedirectView
 
 
+admin.site.site_header = 'Graceville Administration'
+admin.site.site_title = 'Graceville Admin'
+admin.site.index_title = 'Graceville site administration'
+
+
 urlpatterns = [
     path('', index, name='index'),
     path('result/', include('result.urls')),

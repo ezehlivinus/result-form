@@ -133,7 +133,7 @@ def edit(request, pk):
         grade=grade,
         term=term,
         session=session,
-        subject=subjects
+        # subject=subjects
         )
         
 
@@ -142,7 +142,8 @@ def edit(request, pk):
     sum_of_totals = 0
     for result in results:
         submitted_subjects.append(result.subject.id )
-        sum_of_totals += result.total        
+        sum_of_totals += result.total         
+              
 
     # get student total score
     total_score = TotalScore.objects.filter(
@@ -192,9 +193,10 @@ def edit(request, pk):
         'session': session,
         'comments': comments,
         'student': student,
-        'results': results,
+        'results': list(results),
         'submitted_subjects': submitted_subjects,
-        
+        'subjects_count': subjects.count,
+        'submitted_subjects_count': len(submitted_subjects),
     }
 
     return render(request, 'result/edit_result.html', context)

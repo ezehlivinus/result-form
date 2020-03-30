@@ -17,9 +17,24 @@
           <div class="col-sm-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Administration</h5>
-                <p class="card-text">Add new or modify existing results together with its 
-                corresponding resources or particulars</p>
+                <h5 class="card-title">Site Administration</h5>
+                <p class="card-text">Add new or modify existing entities/resources</p>
+                <ul style="text-align: left;">
+                  <li>Student</li>
+                  <li>Teacher</li>
+                  <li>Grade</li>
+                  <li>Subject</li>
+                  <li>Session</li>
+                  <li>Term</li>
+
+                </ul>
+                <p class="small" style="text-align: left">
+                Note that deleting a student's result for a particular session, term, and grade; 
+                may require that you delete the student's 'total score' for same session, term, and grade. 
+                <br/>
+                
+                </p>
+
                 <a href="admin/" target="_blank" class="btn btn-primary">Go here</a>
               </div>
             </div>
@@ -27,13 +42,24 @@
           <div class="col-sm-6">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Results</h5>
-                <p class="card-text">View and Print Students' results</p>
+                <h5 class="card-title">Results Administration</h5>
+                <p class="card-text">Add, change, view and/or print Students' results</p>
+
                 {% comment %} <a href="#" class="btn btn-primary">Go here</a> {% endcomment %}
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
                   Go here
                 </button>
+
+                  <br/>
+                  <br/>
+
+                <p class="small" style="text-align: left">
+                'To delete a result, use the site administration'
+                <br/>
+
+                </p>
+
                   <!-- Modal -->
                   <div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
